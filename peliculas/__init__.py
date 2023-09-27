@@ -31,7 +31,11 @@ def create_app(test_config=None):
     
 
 
-    from . import db
+
+
+    from . import db, pelis
     db.init_app(app)
+
+    app.register_blueprint(pelis.bp)
 
     return app

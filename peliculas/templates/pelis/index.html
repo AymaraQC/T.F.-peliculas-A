@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Peliculas{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<ul>
+  {% for peli in peliculas %}
+    <li>
+      {{ peli['title'] }} ({{ peli['release_year'] }}) - {{ peli['idioma'] }}
+    </li>
+  {% endfor %}
+</ul>
+{% endblock %}
