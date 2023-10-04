@@ -5,7 +5,7 @@ from werkzeug.exceptions import abort
 
 from peliculas.db import get_db
 
-bp = Blueprint('blog', __name__)
+bp = Blueprint('pelis', __name__, url_prefix="/pelis/")
 
 @bp.route('/')
 def index():
@@ -13,11 +13,21 @@ def index():
     peliculas = db.execute(
          """SELECT f.title, f.release_year, l.name AS idioma FROM film f JOIN language l
             ON f.language_id = l.language_id
-            ORDER BY title """
-        #"""SELECT f.title, f.release_year, "ingles" AS idioma 
+            ORDER BY title """ 
+ #       SELECT Title AS TITULO FROM albums
+ #   WHERE ArtistId = (SELECT ArtistId FROM artists
+ #                   WHERE name = "Deep Purple")
+
+   #"""SELECT f.title, f.release_year, "ingles" AS idioma 
         #FROM film f ORDER BY title """
     ).fetchall()
-    return render_template('pelis/index.html', peliculas=peliculas)
+    return render_template('pelis/index.html', peliculas=peliculas) #CREO QUE ACA SE AGREGAN LAS TABLAS
+
+
+
+
+#ACA YA AGREGUE LENGUAJE, ME FALTA ACTOR Y CATEGORIA.
+
 
 # def get_post(id):
 #     post = get_db().execute(

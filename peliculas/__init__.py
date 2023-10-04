@@ -33,9 +33,14 @@ def create_app(test_config=None):
 
 
 
-    from . import db, pelis
-    db.init_app(app)
+    from . import db, pelis, categoria, actor, language
 
+    db.init_app(app)
     app.register_blueprint(pelis.bp)
+    app.register_blueprint(categoria.bp)
+    app.register_blueprint(actor.bp)
+    app.register_blueprint(language.bp)
+
+    #imposrtar 
 
     return app
