@@ -1,0 +1,19 @@
+{% extends 'base.html' %} {% block header %}
+<h1>{% block title %}Peliculas{% endblock %}</h1>
+{% endblock %} 
+{% block content %}
+
+
+<!--METER ESTOS ELEMENTOS EN  UN ETIQUETA PARA QUE QUEDE MAS ORDENADO-->
+{{ info_peli['title'] }} ({{ info_peli['description'] }}) - {{ info_peli['release_year'] }}
+
+<ul>
+  {% for actor in actors %}
+  <li>
+    {{ actor['first_name'] }} {{ actor['last_name'] }}
+  </li>
+  {% endfor %}
+</ul>
+
+{% endblock %}
+

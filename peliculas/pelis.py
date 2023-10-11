@@ -10,8 +10,8 @@ bp = Blueprint('pelis', __name__, url_prefix="/pelis/")
 @bp.route('/')
 def index():
     db = get_db()
-    peliculas = db.execute(
-         """SELECT f.title, f.release_year, l.name AS idioma FROM film f JOIN language l
+    peliculas = db.execute( #agregar esto
+         """SELECT f.film_id, f.title, f.release_year, l.name AS idioma FROM film f JOIN language l
             ON f.language_id = l.language_id
             ORDER BY title """ 
  #       SELECT Title AS TITULO FROM albums
@@ -20,8 +20,46 @@ def index():
 
    #"""SELECT f.title, f.release_year, "ingles" AS idioma 
         #FROM film f ORDER BY title """
-    ).fetchall()
+
+    ).fetchall()#hasta aca en pelis.py
     return render_template('pelis/index.html', peliculas=peliculas) #CREO QUE ACA SE AGREGAN LAS TABLAS
+
+
+
+
+
+
+#HACER ESTO MISMO PERO EN ACTOR.PY(CREO9) ADEMAS AGREGAR EL URL, COMO EN EL ACTOR
+@bp.route('/detalle/<int:id>')
+def detalle(id):
+    db = get_db()
+    info_peli = db.execute( 
+         """SELECT fi.title, fi.description, fi.release_year FROM film fi
+         WHERE fi.film_id = ?""", 
+        (id,)).fetchone()
+    
+    actors = db.execute( 
+         """ SELECT ac.first_name, ac.last_name 
+         FROM actor ac JOIN film_actor fia ON ac.actor_id = fia.actor_id  
+         WHERE fia.film_id = ?;""",
+        (id,)).fetchall()
+    return render_template('pelis/detalle.html', info_peli=info_peli, actors=actors)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -41,3 +79,6 @@ def index():
 #         abort(404, f"Post id {id} doesn't exist.")
 
 #     return post
+
+
+
