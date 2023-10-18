@@ -39,10 +39,14 @@ def detalle(id):
         (id,)).fetchone()
     
     actors = db.execute( 
-         """ SELECT ac.first_name, ac.last_name 
+         """ SELECT ac.first_name, ac.last_name, ac.actor_id
          FROM actor ac JOIN film_actor fia ON ac.actor_id = fia.actor_id  
          WHERE fia.film_id = ?;""",
         (id,)).fetchall()
+    
+
+
+
     return render_template('pelis/detalle.html', info_peli=info_peli, actors=actors)
 
 
