@@ -1,16 +1,18 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint, flash, g, jsonify, redirect, render_template, request, url_for
 )
 from werkzeug.exceptions import abort
 
 from peliculas.db import get_db
 
 bp = Blueprint('pelis', __name__, url_prefix="/pelis/")
+bpapi = Blueprint('pelis_api',__name__, url_prefix="/api/pelis/")#modificar
+
 
 @bp.route('/')
 def index():
     db = get_db()
-    peliculas = db.execute( #agregar esto
+    peliculas = db.execute( 
          """SELECT f.film_id, f.title, f.release_year, l.name AS idioma FROM film f JOIN language l
             ON f.language_id = l.language_id
             ORDER BY title """ 
@@ -24,7 +26,19 @@ def index():
     ).fetchall()#hasta aca en pelis.py
     return render_template('pelis/index.html', peliculas=peliculas) #CREO QUE ACA SE AGREGAN LAS TABLAS
 
+@bpapi.route('/') #modificar
+def index_api():
+    db = get_db()
+    peliculas = db.execute( #agregar esto
+         """SELECT f.film_id, f.title, f.release_year, l.name AS idioma FROM film f JOIN language l
+            ON f.language_id = l.language_id
+            ORDER BY title """ 
+    ).fetchall()   
+    for peli in peliculas:
+        peli["url"] = url_for("pelis_api.detalle_api", id=peli["film_id"], _external=True)#se agrega el external para que se vea mas prolijo(?)
+    
 
+    return jsonify(peliculas=peliculas)
 
 
 
@@ -48,6 +62,29 @@ def detalle(id):
 
 
     return render_template('pelis/detalle.html', info_peli=info_peli, actors=actors)
+
+
+
+@bpapi.route('/detalle/<int:id>')
+def detalle_api(id):
+    db = get_db()
+    info_peli = db.execute( 
+         """SELECT fi.title, fi.description, fi.release_year FROM film fi
+         WHERE fi.film_id = ?""", 
+        (id,)).fetchone()
+    
+    actors = db.execute( 
+         """ SELECT ac.first_name, ac.last_name, ac.actor_id
+         FROM actor ac JOIN film_actor fia ON ac.actor_id = fia.actor_id  
+         WHERE fia.film_id = ?;""",
+        (id,)).fetchall()
+    
+
+    for actor in actors:
+        actor["url"] = url_for("actor_api.detalle_api", id=actor["actor_id"], _external=True)#se agrega el external para que se vea mas prolijo(?)
+
+
+    return jsonify(info_peli=info_peli, actors=actors)
 
 
 

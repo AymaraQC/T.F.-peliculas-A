@@ -37,9 +37,14 @@ def create_app(test_config=None):
 
     db.init_app(app)
     app.register_blueprint(pelis.bp)
+    app.register_blueprint(pelis.bpapi)
     app.register_blueprint(categoria.bp)
     app.register_blueprint(actor.bp)
+    app.register_blueprint(actor.bpapi)
     app.register_blueprint(language.bp)
+    
+
+
 
     #imposrtar 
 
