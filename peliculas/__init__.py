@@ -37,6 +37,7 @@ def create_app(test_config=None):
 
     db.init_app(app)
     app.register_blueprint(pelis.bp)
+    app.add_url_rule("/", "pelis.index")
     app.register_blueprint(pelis.bpapi)
     app.register_blueprint(categoria.bp)
     app.register_blueprint(actor.bp)

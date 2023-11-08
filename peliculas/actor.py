@@ -12,12 +12,13 @@ bpapi = Blueprint('actor_api',__name__, url_prefix="/api/actor/")#aca duplique e
 @bp.route('/')
 def index():
     db = get_db()
-    actors = db.execute(
+    resultado = db.execute(
           """ SELECT first_name AS Nombre, last_name AS Apellido ,
            actor_id 
           FROM actor ORDER BY Nombre """ 
 
-    ).fetchall()
+    )
+    actors = resultado.fetchall()#aca ya esta modificado
     return render_template('actor/index.html', actors=actors)
 
 
@@ -30,7 +31,7 @@ def index_api():
            actor_id 
           FROM actor ORDER BY Nombre """ 
 
-    ).fetchall()
+    ).fetchall() #modificar el fetchall()
 
     #agregue esto del for para el api
     for actor in actors:
@@ -46,14 +47,14 @@ def detalle(id):
     info_actor = db.execute( 
          """SELECT first_name, last_name FROM actor
          WHERE actor_id = ?;""", 
-        (id,)).fetchone()
+        (id,)).fetchone() #modificar el fetchall()
     
     peliculas = db.execute( 
         #aca hay que agregar 
          """ SELECT title, ac.film_id
          FROM film ac JOIN film_actor fia ON ac.film_id = fia.film_id  
          WHERE fia.actor_id = ?; """,
-        (id,)).fetchall()
+        (id,)).fetchall() #modificar el fetchall()
     
 
 
@@ -67,14 +68,14 @@ def detalle_api(id):
     info_actor = db.execute( 
          """SELECT first_name, last_name FROM actor
          WHERE actor_id = ?;""", 
-        (id,)).fetchone()
+        (id,)).fetchone() #modificar el fetchall()
     
     peliculas = db.execute( 
         #aca hay que agregar 
          """ SELECT title, ac.film_id
          FROM film ac JOIN film_actor fia ON ac.film_id = fia.film_id  
          WHERE fia.actor_id = ?; """,
-        (id,)).fetchall()
+        (id,)).fetchall() #modificar el fetchall()
     
     for peli in peliculas:
         peli["url"] = url_for("pelis_api.detalle_api", id=peli["film_id"], _external=True)

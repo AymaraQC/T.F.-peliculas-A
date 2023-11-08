@@ -12,7 +12,7 @@ bpapi = Blueprint('pelis_api',__name__, url_prefix="/api/pelis/")#modificar
 @bp.route('/')
 def index():
     db = get_db()
-    peliculas = db.execute( 
+    db.execute( 
          """SELECT f.film_id, f.title, f.release_year, l.name AS idioma FROM film f JOIN language l
             ON f.language_id = l.language_id
             ORDER BY title """ 
@@ -23,17 +23,19 @@ def index():
    #"""SELECT f.title, f.release_year, "ingles" AS idioma 
         #FROM film f ORDER BY title """
 
-    ).fetchall()#hasta aca en pelis.py
+    )
+    peliculas = db.fetchall()#hasta aca en pelis.py
     return render_template('pelis/index.html', peliculas=peliculas) #CREO QUE ACA SE AGREGAN LAS TABLAS
 
 @bpapi.route('/') #modificar
 def index_api():
     db = get_db()
-    peliculas = db.execute( #agregar esto
+    db.execute( #agregar esto
          """SELECT f.film_id, f.title, f.release_year, l.name AS idioma FROM film f JOIN language l
             ON f.language_id = l.language_id
             ORDER BY title """ 
-    ).fetchall()   
+    )
+    peliculas = db.fetchall()   
     for peli in peliculas:
         peli["url"] = url_for("pelis_api.detalle_api", id=peli["film_id"], _external=True)#se agrega el external para que se vea mas prolijo(?)
     
@@ -50,13 +52,13 @@ def detalle(id):
     info_peli = db.execute( 
          """SELECT fi.title, fi.description, fi.release_year FROM film fi
          WHERE fi.film_id = ?""", 
-        (id,)).fetchone()
+        (id,)).fetchone() #modificar el fetchone 
     
     actors = db.execute( 
          """ SELECT ac.first_name, ac.last_name, ac.actor_id
          FROM actor ac JOIN film_actor fia ON ac.actor_id = fia.actor_id  
          WHERE fia.film_id = ?;""",
-        (id,)).fetchall()
+        (id,)).fetchall() #modificar el fetchone
     
 
 
@@ -71,13 +73,13 @@ def detalle_api(id):
     info_peli = db.execute( 
          """SELECT fi.title, fi.description, fi.release_year FROM film fi
          WHERE fi.film_id = ?""", 
-        (id,)).fetchone()
+        (id,)).fetchone() #creo que tambien el aca modificar el fetchone
     
     actors = db.execute( 
          """ SELECT ac.first_name, ac.last_name, ac.actor_id
          FROM actor ac JOIN film_actor fia ON ac.actor_id = fia.actor_id  
          WHERE fia.film_id = ?;""",
-        (id,)).fetchall()
+        (id,)).fetchall()#creo que tambien el aca modificar el fetchone
     
 
     for actor in actors:
