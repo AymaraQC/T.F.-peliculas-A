@@ -26,12 +26,13 @@ def index():
 @bpapi.route('/')
 def index_api():
     db = get_db()
-    actors = db.execute(
+    db.execute(
           """ SELECT first_name AS Nombre, last_name AS Apellido ,
            actor_id 
           FROM actor ORDER BY Nombre """ 
 
-    ).fetchall() #modificar el fetchall()
+    )
+    actors = db.fetchall() #modificar el fetchall()
 
     #agregue esto del for para el api
     for actor in actors:
@@ -44,17 +45,19 @@ def index_api():
 @bp.route('/detalle/<int:id>')
 def detalle(id):
     db = get_db()
-    info_actor = db.execute( 
+    db.execute( 
          """SELECT first_name, last_name FROM actor
-         WHERE actor_id = ?;""", 
-        (id,)).fetchone() #modificar el fetchall()
+         WHERE actor_id = %s;""", 
+        (id,))
+    info_actor = db.fetchone() #modificar el fetchall()
     
-    peliculas = db.execute( 
+    db.execute( 
         #aca hay que agregar 
          """ SELECT title, ac.film_id
          FROM film ac JOIN film_actor fia ON ac.film_id = fia.film_id  
-         WHERE fia.actor_id = ?; """,
-        (id,)).fetchall() #modificar el fetchall()
+         WHERE fia.actor_id = %s; """,
+        (id,))
+    peliculas = db.fetchall() #modificar el fetchall()
     
 
 
@@ -65,17 +68,19 @@ def detalle(id):
 @bpapi.route('/detalle/<int:id>')
 def detalle_api(id):
     db = get_db()
-    info_actor = db.execute( 
+    db.execute( 
          """SELECT first_name, last_name FROM actor
-         WHERE actor_id = ?;""", 
-        (id,)).fetchone() #modificar el fetchall()
+         WHERE actor_id = %s;""", 
+        (id,))
+    info_actor = db.fetchone() #modificar el fetchall()
     
-    peliculas = db.execute( 
+    db.execute( 
         #aca hay que agregar 
          """ SELECT title, ac.film_id
          FROM film ac JOIN film_actor fia ON ac.film_id = fia.film_id  
-         WHERE fia.actor_id = ?; """,
-        (id,)).fetchall() #modificar el fetchall()
+         WHERE fia.actor_id = %s; """,
+        (id,))
+    peliculas = db.fetchall() #modificar el fetchall()
     
     for peli in peliculas:
         peli["url"] = url_for("pelis_api.detalle_api", id=peli["film_id"], _external=True)

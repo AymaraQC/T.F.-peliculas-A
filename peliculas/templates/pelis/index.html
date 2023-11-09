@@ -4,9 +4,17 @@
 <ul>
   {% for peli in peliculas %}
   <li>
-    <a href="{{url_for('pelis.detalle', id=peli['film_id'])}}">{{ peli['title'] }} </a>({{ peli['release_year'] }}) - {{ peli['idioma'] }}
+    <a href="{{url_for('pelis.detalle', id=peli['film_id'])}}"
+      >{{ peli['title'] }}
+    </a>
+
     <!-- aca agregar los valores de la tabla-->
   </li>
+
+  ({{ peli['release_year'] }}) - {{ peli['idioma'] }}
+
+  <p>-----------------------------------------------------</p>
+
   {% endfor %}
 </ul>
 

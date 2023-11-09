@@ -49,16 +49,19 @@ def index_api():
 @bp.route('/detalle/<int:id>')
 def detalle(id):
     db = get_db()
-    info_peli = db.execute( 
+    db.execute( 
          """SELECT fi.title, fi.description, fi.release_year FROM film fi
-         WHERE fi.film_id = ?""", 
-        (id,)).fetchone() #modificar el fetchone 
+         WHERE fi.film_id = %s""", 
+        (id,))
     
-    actors = db.execute( 
+    info_peli = db.fetchone() #modificar el fetchone 
+    
+    db.execute( 
          """ SELECT ac.first_name, ac.last_name, ac.actor_id
          FROM actor ac JOIN film_actor fia ON ac.actor_id = fia.actor_id  
-         WHERE fia.film_id = ?;""",
-        (id,)).fetchall() #modificar el fetchone
+         WHERE fia.film_id = %s;""",
+        (id,))
+    actors =db.fetchall() #modificar el fetchone
     
 
 
@@ -70,16 +73,18 @@ def detalle(id):
 @bpapi.route('/detalle/<int:id>')
 def detalle_api(id):
     db = get_db()
-    info_peli = db.execute( 
+    db.execute( 
          """SELECT fi.title, fi.description, fi.release_year FROM film fi
-         WHERE fi.film_id = ?""", 
-        (id,)).fetchone() #creo que tambien el aca modificar el fetchone
+         WHERE fi.film_id = %s""", 
+        (id,))
+    info_peli = db.fetchone() #creo que tambien el aca modificar el fetchone
     
-    actors = db.execute( 
+    db.execute( 
          """ SELECT ac.first_name, ac.last_name, ac.actor_id
          FROM actor ac JOIN film_actor fia ON ac.actor_id = fia.actor_id  
-         WHERE fia.film_id = ?;""",
-        (id,)).fetchall()#creo que tambien el aca modificar el fetchone
+         WHERE fia.film_id = %s;""",
+        (id,))
+    actors = db.fetchall()#creo que tambien el aca modificar el fetchone
     
 
     for actor in actors:
